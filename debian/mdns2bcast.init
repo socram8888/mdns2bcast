@@ -12,11 +12,12 @@
 ### END INIT INFO
 
 NAME=mdns2bcast
-DAEMON=/usr/sbin/mdns2bcast
+DAEMON=/usr/bin/python3
+SCRIPT=/usr/sbin/mdns2bcast
 PIDFILE=/run/$NAME.pid
 DESC="MDNS to broadcast"
 
-test -x "$DAEMON" || exit 0
+test -x "$SCRIPT" || exit 0
 
 . /lib/lsb/init-functions
 . /etc/default/mdns2bcast
@@ -28,7 +29,7 @@ start() {
 	fi
 
 	start-stop-daemon --start --quiet --oknodo --background --make-pidfile --pidfile $PIDFILE \
-		--exec $DAEMON -- $IFACE
+		--exec $DAEMON -- $SCRIPT $IFACE
 }
 
 stop() {
