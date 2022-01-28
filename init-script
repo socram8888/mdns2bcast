@@ -1,0 +1,62 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          mdns2bcast
+# Required-Start:    $remote_fs $network
+# Required-Stop:     $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: MDNS to broadcast
+# Description:       Script that proxies multicast DNS to broadcast MAC to work-around faulty
+#                    MDNS responders
+### END INIT INFO
+
+NAME=mdns2bcast
+DAEMON=/usr/bin/python3
+PIDFILE=/run/$NAME.pid
+DESC="MDNS to broadcast"
+IFACE=eno1
+
+test -x "$DAEMON" || exit 0
+
+. /lib/lsb/init-functions
+
+start() {
+	start-stop-daemon --start --quiet --oknodo --background --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- \
+			/mnt/config/mdns2bcast/daemon.py $IFACE
+}
+
+stop() {
+	start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE --remove-pidfile --exec $DAEMON
+}
+
+end_msg() {
+	local code=$1
+	log_end_msg $code
+	exit $code
+}
+
+case "$1" in
+	status)
+		status_of_proc -p "$PIDFILE" "$DAEMON" "$NAME"
+		exit $?
+		;;
+	start)
+		log_daemon_msg "Starting $DESC" "$NAME"
+		start
+		end_msg $?
+		;;
+	stop)
+		log_daemon_msg "Stopping $DESC" "$NAME"
+		stop
+		end_msg $?
+		;;
+	restart|force-reload)
+		log_daemon_msg "Restarting $DESC" "$NAME"
+		stop && start
+		end_msg $?
+		;;
+	*)
+		echo "Usage: $NAME {start|stop|restart|force-reload|status}" >&2
+		exit 3
+esac
