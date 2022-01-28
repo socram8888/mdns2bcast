@@ -23,8 +23,8 @@ test -x "$DAEMON" || exit 0
 
 start() {
 	if [ -z "$IFACE" ]; then
-		echo "Interface not set" &>2
-		return 1
+		echo "Interface not set - not starting" &>2
+		return 0
 	fi
 
 	start-stop-daemon --start --quiet --oknodo --background --make-pidfile --pidfile $PIDFILE \
