@@ -6,24 +6,29 @@
 # Required-Stop:     $remote_fs $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: MDNS to broadcast
-# Description:       Script that proxies multicast DNS to broadcast MAC to work-around faulty
-#                    MDNS responders
+# Short-Description: mDNS to broadcast
+# Description:       Script that forwards mDNS queries to broadcast MAC frames to work-around
+#                    flawed routers/switches that do not properly handle multicast.
 ### END INIT INFO
 
 NAME=mdns2bcast
-DAEMON=/usr/bin/python3
+DAEMON=/usr/sbin/mdns2bcast
 PIDFILE=/run/$NAME.pid
 DESC="MDNS to broadcast"
-IFACE=eno1
 
 test -x "$DAEMON" || exit 0
 
 . /lib/lsb/init-functions
+. /etc/default/mdns2bcast
 
 start() {
-	start-stop-daemon --start --quiet --oknodo --background --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- \
-			/mnt/config/mdns2bcast/daemon.py $IFACE
+	if [ -z "$IFACE" ]; then
+		echo "Interface not set" &>2
+		return 1
+	fi
+
+	start-stop-daemon --start --quiet --oknodo --background --make-pidfile --pidfile $PIDFILE \
+		--exec $DAEMON -- $IFACE
 }
 
 stop() {

@@ -1,0 +1,17 @@
+Source: mdns2bcast
+Section: net
+Priority: optional
+Maintainer: Marcos Del Sol Vives <marcos@orca.pet>
+Build-Depends: debhelper (>=10)
+Standards-Version: 4.0.0
+Vcs-Git: https://gitlab.com/socram/mdns2bcast
+Vcs-browser: https://gitlab.com/socram/mdns2bcast
+Homepage: https://gitlab.com/socram/mdns2bcast
+
+Package: mdns2bcast
+Architecture: all
+Depends: python3-minimal (>= 3.8.0)
+Description: converts mDNS into broadcast frames
+ mdns2bcast converts multicast DNS (mDNS) queries into broadcast Ethernet
+ frames, to work-around ill-behaving switches and routers that do not properly
+ handle multicast frames.

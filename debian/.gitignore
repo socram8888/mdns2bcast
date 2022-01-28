@@ -1,0 +1,4 @@
+*.substvars
+.debhelper
+debhelper-build-stamp
+mdns2bcast
