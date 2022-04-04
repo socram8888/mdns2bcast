@@ -95,7 +95,7 @@ while True:
 	udppacket[6] = udpsum >> 8
 	udppacket[7] = udpsum & 0xFF
 
-	ipheader = bytearray(struct.pack(
+	ipheader = struct.pack(
 		'>BBHHHBBH4s4s',
 		# Version (4) and IHL (5 32-bit words)
 		0x45,
@@ -117,7 +117,7 @@ while True:
 		ifaceip,
 		# Destination address (224.0.0.251)
 		b'\xE0\x00\x00\xFB'
-	))
+	)
 
 	ipsum = ip_checksum(ipheader) ^ 0xFFFF
 
